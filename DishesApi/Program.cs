@@ -13,4 +13,11 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetRequiredService<DishesDbContext>();
+    context.Database.EnsureDeleted();
+    context.Database.Migrate();
+}
+
 app.Run();
